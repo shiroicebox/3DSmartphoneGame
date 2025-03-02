@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneManeger : MonoBehaviour
 {
+    public FadeSceneLoader fadeSceneLoader;
     private void Start()
     {
         // ¶Œü‚«‚ğ—LŒø‚É‚·‚é
@@ -21,9 +22,16 @@ public class SceneManeger : MonoBehaviour
         SceneManager.LoadScene("TitleScene");
     }
 
+    public void MoveScene_StageSelect()
+    {
+        fadeSceneLoader.sceneTitle = "StageSelectScene";
+        fadeSceneLoader.CallCoroutine();
+    }
+
     public void MoveScene_Main()
     {
-        SceneManager.LoadScene("MainScene");
+        fadeSceneLoader.sceneTitle = "MainScene";
+        fadeSceneLoader.CallCoroutine();
     }
 
 }

@@ -21,6 +21,9 @@ public class EnemyControler : MonoBehaviour
     private Animator _animator;
     private bool _hasAnimator;
 
+    public Transform[] goals;
+    private int destNum = 0;
+
     //[Tooltip("AudioClip")]
     //public AudioClip LandingAudioClip;
     //public AudioClip[] FootstepAudioClips;
@@ -30,7 +33,7 @@ public class EnemyControler : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-
+        agent.destination = goals[destNum].position;
         //_hasAnimator = TryGetComponent(out _animator);
         //AssignAnimationIDs();
     }
@@ -43,24 +46,40 @@ public class EnemyControler : MonoBehaviour
         EnemyMove();
     }
 
-    private void EnemyMove()
+    void nextGoal()
     {
-        if (target.GetComponent<ThirdPersonController>()._isArea == true)
+
+        destNum += 1;
+        if (destNum == 4)
         {
-            agent.destination = target.transform.position;
+            destNum = 0;
         }
 
-        //float targetSpeed = _speed;
-        //float inputMagnitude = 1f;
-        //_animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime);
-        //if (_animationBlend < 0.01f) _animationBlend = 0f;
+        // ランダムに巡回する場合、destNum = Random.Range(0,4);
+        agent.destination = goals[destNum].position;
 
-        //// update animator if using character
-        //if (_hasAnimator)
-        //{
-        //    _animator.SetFloat(_animIDSpeed, _animationBlend);
-        //    _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
-        //}
+        Debug.Log(destNum);
+    }
+
+    private void EnemyMove()
+    {
+        // NaviMeshで範囲内に入ったプレイヤーを追尾する処理
+        if (target.GetComponent<ThirdPersonController>()._isArea == true)
+        {
+            agent.speed = 3.5f;
+            agent.destination = target.transform.position;
+        }
+        // 
+        else
+        {
+            // Debug.Log(agent.remainingDistance);
+            if (agent.remainingDistance < 0.5f)
+            {
+                agent.speed = 2.0f;
+                nextGoal();
+            }
+        }
+
     }
 
     ///// <summary>
